@@ -16,11 +16,14 @@ jobs:
         working-directory: dotnet
     steps:
     - uses: actions/checkout@v2
+    - name: Generate version number
+      id: version
+      run: echo "::set-output name=version::${{ github.run_number }}"
     - uses: azure/docker-login@v1
       with:
         login-server: gestionconfiguracion.azurecr.io
         username: ${{ secrets.REGISTRY_USERNAME }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
     - run: |
-        docker build . -t gestionconfiguracion.azurecr.io/ema/petclinic:${{ github.sha }}
-        docker push gestionconfiguracion.azurecr.io/ema/petclinic:${{ github.sha }}
+        docker build . -t gestionconfiguracion.azurecr.io/ema/petclinic:${{ steps.version.outputs.version }}
+        docker push gestionconfiguracion.azurecr.io/ema/petclinic:${{ steps.version.outputs.version }}
