@@ -2,6 +2,11 @@ name: Docker Image en Maven
 
 on: 
   workflow_dispatch:
+  push:
+    branches: [ maven ]
+  pull_request:
+    branches: [ maven ]
+
 
 env:
   HELM_EXPERIMENTAL_OCI: 1
