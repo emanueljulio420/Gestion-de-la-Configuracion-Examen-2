@@ -33,4 +33,4 @@ jobs:
         with:
           context: .  
           push: true
-          tags: gestionconfiguracion.azurecr.io/hello-webapp-230824114908:${{ steps.version.outputs.version }}
+          tags: ema/petclinic:${{ steps.version.outputs.version }}
