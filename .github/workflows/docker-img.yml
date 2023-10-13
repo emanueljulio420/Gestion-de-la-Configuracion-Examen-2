@@ -19,7 +19,7 @@ jobs:
       - name: Login to Azure Container Registry
         uses: docker/login-action@v1
         with:
-          registry: gdlcemmanuelsamuel.azurecr.io  
+          registry: gestionconfiguracion.azurecr.io 
           username: ${{ secrets.ACR_PUSH_USER }}
           password: ${{ secrets.ACR_PUSH_TOKEN }}
 
