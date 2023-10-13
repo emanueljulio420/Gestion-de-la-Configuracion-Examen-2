@@ -1,6 +1,10 @@
 name: Build Linux Container Image and Push to ACR
 
 on:
+  push:
+    branches: [ maven ]
+  pull_request:
+    branches: [ maven ]
   workflow_dispatch:
 
 jobs:
