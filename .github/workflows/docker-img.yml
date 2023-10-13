@@ -1,37 +1,17 @@
 name: Docker Image en Maven
 
-on: 
-  workflow_dispatch:
-  push:
-    branches: [ maven ]
-  pull_request:
-    branches: [ maven ]
-
-
-env:
-  HELM_EXPERIMENTAL_OCI: 1
-  HELM_VERSION_TO_INSTALL: 3.5.0
-  ACR_NAME: gestionconfiguracion
-  ACR_REPO_NAME: ema/petclinic
-
+on:
+  push
 jobs:
-  build:
-    name: publish acr
+  build_and_publish:
     runs-on: ubuntu-latest
-    environment: prod
     steps:
-      - uses: actions/checkout@v2
-        name: checkout repo
-      - name: install helm
-        uses: Azure/setup-helm@v1
-        with:
-          version: ${{ env.HELM_VERSION_TO_INSTALL }}# default is latest
-      - name: login to acr using helm
+      - uses: actions/checkout@v3
+      - name: Generate version number
+        id: version
+        run: echo "::set-output name=version::${{ github.run_number }}"
+      - name: Build and push the Image
         run: |
-          echo $ | helm registry login $.azurecr.io --username $ --password-stdin 
-      - name: save helm chart to local registry
-        run: |
-          helm chart save $/src/azure-vote-helm-chart/ $.azurecr.io/$:latest    
-      - name: publish chart to acr
-        run: |
-          helm chart push $.azurecr.io/$:latest
+          docker login --username elmanuel25 --password ${{ secrets.GH_PAT }} ghcr.io
+          docker build . --tag ghcr.io/elmanuel25/hello-webapp-230824114908:${{ steps.version.outputs.version }}
+          docker push ghcr.io/elmanuel25/hello-webapp-230824114908:${{ steps.version.outputs.version }}
