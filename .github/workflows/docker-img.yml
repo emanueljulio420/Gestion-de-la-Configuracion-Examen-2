@@ -25,5 +25,5 @@ jobs:
         username: ${{ secrets.REGISTRY_USERNAME }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
     - run: |
-        docker build . -t gestionconfiguracion.azurecr.io/ema/petclinic:${{ steps.version.outputs.version }}
+        docker build . gestionconfiguracion.azurecr.io/ema/petclinic:${{ steps.version.outputs.version }}
         docker push gestionconfiguracion.azurecr.io/ema/petclinic:${{ steps.version.outputs.version }}
