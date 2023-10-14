@@ -1,29 +1,28 @@
-name: Build Linux Container Image and Push to ACR
-
+name: Push to Azure Container Registry
 on:
   push:
-    branches: [ maven ]
-  pull_request:
-    branches: [ maven ]
-  workflow_dispatch:
+    branches:
+      - main
 
 jobs:
-  build:
+  push-to-azure-container-registry:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: dotnet
     steps:
-    - uses: actions/checkout@v2
-    - name: Generate version number
-      id: version
-      run: echo "::set-output name=version::${{ github.run_number }}"
-    - uses: azure/docker-login@v1
-      with:
-        login-server: gestionconfiguracion.azurecr.io
-        username: ${{ secrets.REGISTRY_USERNAME }}
-        password: ${{ secrets.REGISTRY_PASSWORD }}
-    - run: |
-        docker build . gestionconfiguracion.azurecr.io/ema/petclinic:${{ steps.version.outputs.version }}
-        docker push gestionconfiguracion.azurecr.io/ema/petclinic:${{ steps.version.outputs.version }}
+      - name: Checkout repository
+        uses: actions/checkout@main
+
+      - name: Login to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: gestionconfiguracion.azurecr.io
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build Docker image
+        run: docker-compose build
+
+      - name: Push Docker image to Azure Container Registry
+        run: |
+            docker tag mydemoapp:latest ${{ secrets.REGISTRY_USERNAME }}.azurecr.io/mydemoapp:${{ github.sha }}
+            docker push ${{ secrets.REGISTRY_USERNAME }}.azurecr.io/mydemoapp:${{ github.sha }}            
+
